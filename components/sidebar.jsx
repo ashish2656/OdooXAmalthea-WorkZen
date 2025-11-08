@@ -5,7 +5,7 @@ import { useAuth } from "@/app/context/auth-context"
 import { useSidebar } from "@/app/context/sidebar-context"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Building2, Users, Clock, Calendar, Banknote, BarChart3, Settings } from "lucide-react"
+import { Building2, Users, Clock, Calendar, Banknote, BarChart3, Settings, UserCog } from "lucide-react"
 
 // Main navigation menu items visible to all users
 const menuItems = [
@@ -15,6 +15,11 @@ const menuItems = [
   { icon: Banknote, label: "Payroll", href: "/payroll" },
   { icon: BarChart3, label: "Reports", href: "/reports" },
   { icon: Settings, label: "Settings", href: "/settings" },
+]
+
+// Admin-only menu items
+const adminMenuItems = [
+  { icon: UserCog, label: "Manage Employees", href: "/users" },
 ]
 
 /**
@@ -70,6 +75,34 @@ export function Sidebar() {
             </Link>
           )
         })}
+
+        {/* Admin-only section */}
+        {user?.role === "Admin" && (
+          <>
+            <div className="pt-4 pb-2">
+              <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Admin Tools
+              </p>
+            </div>
+            {adminMenuItems.map((item) => {
+              const Icon = item.icon
+              const isActive = pathname === item.href
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                    isActive ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-muted"
+                  }`}
+                >
+                  <Icon size={20} />
+                  <span className="font-medium">{item.label}</span>
+                </Link>
+              )
+            })}
+          </>
+        )}
       </nav>
     </motion.aside>
   )

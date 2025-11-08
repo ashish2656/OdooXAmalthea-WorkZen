@@ -22,6 +22,16 @@ export default function Dashboard() {
     }
   }, [user])
 
+  // Re-fetch employees when attendance is updated elsewhere (navbar / attendance page)
+  useEffect(() => {
+    const handler = (e) => {
+      console.log("attendanceUpdated event received", e.detail)
+      fetchEmployees()
+    }
+
+    window.addEventListener("attendanceUpdated", handler)
+    return () => window.removeEventListener("attendanceUpdated", handler)
+  }, [user])
   // ✅ Update time every second for accuracy
   useEffect(() => {
     const updateTime = () => {
